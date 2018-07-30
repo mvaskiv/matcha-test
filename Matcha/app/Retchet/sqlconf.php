@@ -1,6 +1,6 @@
 <?php
 
 return (array(
-'dsn' => 'mysql:host=fdb21.awardspace.net:3306;dbname=2700527_camagru',
-'user' => '2700527_camagru',
-'password' => 'qweqwe123'));
+'dsn' => 'mysql:host=eu-cdbr-west-02.cleardb.net;dbname=heroku_48c020079654e9c',
+'user' => 'b26c18ecd55a46',
+'password' => '49564ec8'));
