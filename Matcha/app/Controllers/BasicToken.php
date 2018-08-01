@@ -10,7 +10,7 @@ class BasicToken{
   function generate($id_user){
     $token = array(
       "id" => $id_user,
-      "time" => (time() + 2 * 60 * 60)
+      "time" => (time() + 30 * 24 * 60 * 60)
     );
     $jwt = JWT::encode($token, $this->_key);
     $decoded = JWT::decode($jwt, $this->_key, array('HS256'));

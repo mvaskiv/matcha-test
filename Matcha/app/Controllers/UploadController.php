@@ -233,6 +233,39 @@ class UploadController extends BasicToken {
   return true;
 }
 
+// SET NAD GET FIREBASE TOKEN
+
+  public function fb_token($request, $response) {
+    $this->parsedBody = $request->getParsedBody();
+    if ($this->exec_firebaseToken($this->parsedBody['action'], $this->parsedBody['fbtoken'], $this->parsedBody['id'])) {
+      $this->rt['status'] = 'ok';
+    }
+    return json_encode($this->rt);
+  }
+
+  private function exec_firebaseToken($action, $token, $id) {
+    $this->init();
+    if ($action === 'set') {
+      // $stmt = $this->conn->query("SELECT * FROM `user` WHERE id = $id");
+      // $row = $stmt->fetch();
+      // if (empty($row['token'])){
+      //   $stmt = $this->conn->prepare("INSERT INTO `user` (`token`) VALUE '$token' WHERE id = $id");
+      //   $stmt->execute();
+      //   return true;
+      // }
+      // else {
+        $stmt = $this->conn->prepare("UPDATE `user` SET fbtoken = '$token' WHERE id = $id");
+        $stmt->execute([json_encode($ser_str), $user_id]);
+        return true;
+      
+    } else if ($action === 'get') {
+      $stmt = $this->conn->query("SELECT * FROM `user` WHERE id = $id");
+      $row = $stmt->fetch();
+      $this->rt['data'] = $row['fbtoken'];
+      return true;
+    }
+    return false;
+  }
 
 // GET MESSAGES 
 
@@ -243,23 +276,22 @@ class UploadController extends BasicToken {
       $this->rt['error'] = 'no id or token';
       return json_encode($this->rt);
     }
-    if ($this->exec_messageHistory($this->parsedBody['viewId'])) {
+    if ($this->exec_messageHistory($this->parsedBody['viewId'], $this->parsedBody['number'])) {
       $this->rt['status'] = 'oke' . $this->parsedBody['viewId'];
     }
     $this->rt['token'] = $this->update($this->parsedBody['token']);
     return json_encode($this->rt);
   }
 
-  private function exec_messageHistory($chatid) {
+  private function exec_messageHistory($chatid, $number) {
     $this->init();
     $stmt = NULL;
     $msg = array();
-    $stmt = $this->conn->prepare("SELECT * FROM messages WHERE chat_id = '$chatid'");
+    $stmt = $this->conn->prepare("SELECT * FROM messages WHERE chat_id = '$chatid' ORDER BY date ASC LIMIT 0, $number");
     $stmt->execute();
     $rows = $stmt->fetchAll();
     // if ($stmt->execute()) {
       foreach($rows as $row) {
-
         array_push($msg, $row);
       }
     // }
