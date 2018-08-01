@@ -233,7 +233,7 @@ class UploadController extends BasicToken {
   return true;
 }
 
-// SET NAD GET FIREBASE TOKEN
+// SET AND GET FIREBASE TOKEN
 
   public function fb_token($request, $response) {
     $this->parsedBody = $request->getParsedBody();
@@ -255,7 +255,7 @@ class UploadController extends BasicToken {
       // }
       // else {
         $stmt = $this->conn->prepare("UPDATE `user` SET fbtoken = '$token' WHERE id = $id");
-        $stmt->execute([json_encode($ser_str), $user_id]);
+        $stmt->execute();
         return true;
       
     } else if ($action === 'get') {
